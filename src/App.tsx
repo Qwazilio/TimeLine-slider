@@ -1,5 +1,5 @@
-import Home from "@/pages/home";
-import '@/styles/reset.css'
+import Home from "@/pages/Home";
+import '@/reset.css'
 
 export default function App  () {
     return <Home />;

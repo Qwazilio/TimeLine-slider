@@ -1,0 +1,32 @@
+// Arrow.module.scss
+
+$arrow-color: #337AB7; // переменная для цвета стрелки
+
+.arrow {
+  cursor: pointer;
+  height: 120px;
+  width: 80px;
+  position: relative;
+  margin: 20px;
+
+  &-top,
+  &-bottom {
+    background: $arrow-color;
+    height: 10px;
+    width: 100px;
+    left: -30px;
+    position: absolute;
+    top: 60px;
+  }
+
+  &-top {
+    top: 64px;
+    transform: rotate(45deg);
+    transform-origin: bottom right;
+  }
+
+  &-bottom {
+    transform: rotate(-45deg);
+    transform-origin: top right;
+  }
+}

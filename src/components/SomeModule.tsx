@@ -5,7 +5,6 @@ const SomeContainer = styled.div`
     justify-content: center;
     padding: 2em;
     background: white;
-    border: 0.1em solid black;
 `;
 
 export default function SomeModule(){

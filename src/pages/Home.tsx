@@ -1,11 +1,13 @@
-import DateSlider from "@/components/date-slider";
-import SomeModule from "@/components/some-module";
+import Timeline from "@/components/timeline/Timeline";
+import SomeModule from "@/components/SomeModule";
+
+
 
 export default function Home(){
     return (
         <div>
             <SomeModule />
-            <DateSlider />
+            <Timeline />
             <SomeModule />
         </div>
     )
