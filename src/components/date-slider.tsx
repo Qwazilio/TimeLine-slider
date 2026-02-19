@@ -49,15 +49,15 @@ export default function DateSlider() {
 
 
     return (
-        <div>
+        <div style={{ paddingLeft: "5em 0em" }}>
             <div>
                 <div>
                     <div>
                         <h1>Исторические <br />даты</h1>
                     </div>
                     <Circle>
-                        <AxisX></AxisX>
-                        <AxisY></AxisY>
+                        <AxisX />
+                        <AxisY />
                     </Circle>
 
                 </div>

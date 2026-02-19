@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
 const SomeContainer = styled.div`
-    background: #f0f0f0;
     display: flex;
     justify-content: center;
     padding: 2em;
-    border-radius: 0.5em;
+    background: white;
+    border: 0.1em solid black;
 `;
 
 export default function SomeModule(){
