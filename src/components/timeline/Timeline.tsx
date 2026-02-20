@@ -12,6 +12,8 @@ export default function Timeline() {
             padding: "0% 10%",
             fontFamily: 'PT Sans',
             overflow: "hidden",
+            marginTop: "1em",
+            marginBottom: "1em",
         }}>
             <div style={{
                 position: "relative",
@@ -35,7 +37,8 @@ export default function Timeline() {
                     </div>
                     <TimelineCircle />
                     <div style={{position: 'absolute', left: 0, bottom: 0}}>
-                        <div style={{display: "flex", justifyContent: "center"}}>
+                        <div style={{marginLeft: "1em"}}>01/06</div>
+                        <div style={{display: "flex"}}>
                             <CircleArrow direction={"left"}/>
                             <CircleArrow direction={"right"}/>
                         </div>

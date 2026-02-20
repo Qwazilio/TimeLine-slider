@@ -4,7 +4,7 @@ const SomeContainer = styled.div`
     display: flex;
     justify-content: center;
     padding: 2em;
-    background: white;
+    background: lightsteelblue;
 `;
 
 export default function SomeModule(){
