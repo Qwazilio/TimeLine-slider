@@ -22,30 +22,47 @@ module.exports = (env, argv) => {
 
         module: {
             rules: [
+                // TSX/TS
                 {
-                    test: /\.tsx?$/,
+                    test: /\.(ts|tsx)$/,
                     use: 'ts-loader',
-                    exclude: /node_modules/
+                    exclude: /node_modules/,
                 },
+
+                // CSS Modules (SCSS)
                 {
-                    test: /\.css$/i,
-                    use: ['style-loader', 'css-loader'], // сначала css-loader, потом style-loader
-                },
-                {
-                    test: /\.module\.s[ac]ss$/,
+                    test: /\.module\.s[ac]ss$/i,
                     use: [
                         'style-loader',
                         {
                             loader: 'css-loader',
-                            options: {
-                                modules: true
-                            }
+                            options: { modules: true }
                         },
                         'sass-loader'
-                    ]
+                    ],
+                },
+
+                // обычный SCSS
+                {
+                    test: /\.s[ac]ss$/i,
+                    exclude: /\.module\.s[ac]ss$/i,
+                    use: ['style-loader', 'css-loader', 'sass-loader'],
+                },
+
+                // обычный CSS (для swiper и других библиотек)
+                {
+                    test: /\.css$/i,
+                    use: ['style-loader', 'css-loader'],
+                },
+
+                // изображения/шрифты
+                {
+                    test: /\.(png|jpe?g|gif|svg|woff2?|eot|ttf)$/,
+                    type: 'asset/resource'
                 }
-            ]
+            ],
         },
+
         plugins: [
             new HtmlWebpackPlugin({
                 template: './public/index.html'
@@ -55,7 +72,8 @@ module.exports = (env, argv) => {
         devServer: {
             historyApiFallback: true,
             port: 3000,
-            open: true
+            open: true,
+            hot: true
         },
 
         devtool: isDev ? 'inline-source-map' : false

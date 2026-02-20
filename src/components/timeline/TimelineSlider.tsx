@@ -22,7 +22,10 @@ export default function TimelineSlider(){
                 className="mySwiper"
             >
                 <SwiperSlide>Slide 1</SwiperSlide>
-                <SwiperSlide>Slide 2</SwiperSlide>
+                <SwiperSlide>
+                    <div>2021</div>
+                    <div style={{maxWidth: "15vw"}}>13 сентября — частное солнечное затмение, видимое в Южной Африке и части Антарктиды</div>
+                </SwiperSlide>
                 <SwiperSlide>Slide 3</SwiperSlide>
                 <SwiperSlide>Slide 4</SwiperSlide>
                 <SwiperSlide>Slide 5</SwiperSlide>
