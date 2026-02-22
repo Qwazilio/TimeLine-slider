@@ -1,82 +1,89 @@
 import styled from "styled-components";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
+import {colors} from "@/theme/colors";
+import {useCounterAnimation} from "@/hook/useCounterAnimated";
 
+export interface TimelineCircleNode{
+    title: string;
+    yearStart: number;
+    yearEnd: number;
+}
 interface TimelineCircleProps {
-    size?: number;       // диаметр круга
+    size?: number;
+    nodes: TimelineCircleNode[];
+    activeTimeline: number;
+    setActiveTimeline: React.Dispatch<React.SetStateAction<number>>;
 }
 export default function TimelineCircle({
+        activeTimeline,
+        setActiveTimeline,
         size = 40,
+        nodes,
     } : TimelineCircleProps) {
-    const total = 6;
     const [rotation, setRotation] = useState(0);
-    const [active, setActive] = useState(0);
+    const startYear = useCounterAnimation(
+        nodes[activeTimeline].yearStart
+    );
+    const endYear = useCounterAnimation(
+        nodes[activeTimeline].yearEnd
+    );
+
+    const changeRotation = (index: number) => {
+        const step = 360 / nodes.length;
+        setRotation(-index * step + 0.001); //0.001 для избавления от блюра
+    };
 
     const handleClick = (index: number) => {
-        setActive(index);
-        const currentAngle = (2 * Math.PI * index) / total - Math.PI;
-        const newRotation = Math.PI - currentAngle;
-        setRotation(newRotation);
+        setActiveTimeline(index);
     };
 
     useEffect(() => {
-        handleClick(0);
-    }, []);
+        changeRotation(activeTimeline)
+    }, [activeTimeline]);
 
     return (
         <Circle>
             {/* Левая точка */}
-            <Year side={"left"}>2001</Year>
+            <Year style={{color: "#5D5FEF"}} side={"left"}>{startYear}</Year>
             {/* Правая точка */}
-            <Year side={"right"}>2006</Year>
+            <Year style={{color: "#EF5DA8"}} side={"right"}>{endYear}</Year>
             <AxisX/>
             <AxisY/>
             <TimeLineBtnContainer rotation={rotation}>
-                {Array.from({length: 6}).map((_, index: number) => {
-                    const radius = 0.5; // половина ширины круга
-                    const angle = (2 * Math.PI * index) / 6 - Math.PI/3; // Начало с PI
-                    const x = 50 + radius * 100 * Math.cos(angle); // в процентах
-                    const y = 50 + radius * 100 * Math.sin(angle); // в процентах
+                {nodes.map((node: TimelineCircleNode, index: number) => {
+                    const radius = 50; // на границу круга
+                    const step = 360 / nodes.length;
+                    const baseOffset = 60; // начало с π/3
+                    const angle = (step * index - baseOffset) * (Math.PI / 180);
+                    const x = 50 + radius * Math.cos(angle);
+                    const y = 50 + radius * Math.sin(angle);
 
                     return (
-                        <div style={{
-
-                        }}>
-                            <TimeLineBtnGhost
-                                key={index}
-                                size={size}
-                                style={{
-                                    left: `${x}%`,
-                                    top: `${y}%`,
-                                    transform: `translate(-50%, -50%) rotate(${-rotation}rad)`,
-                                }}
-                                onClick={() => handleClick(index)}
-                            >
-                                <TimeLineBtn>
-                                    <TimelineBtnCircle
-                                        size={size}
-                                        style={{
-                                            transform: index === active ? "translate(-50%, -50%) scale(1)" : "",
-                                        }}
-                                    >
-                                        {index}
-                                    </TimelineBtnCircle>
-                                </TimeLineBtn>
-                                <TimeLineBtnLabel
-                                    style={{
-                                        opacity: index === active ? "1": "0",
-                                        scale: index === active ? "1" : "0",
-                                    }}
+                        <TimeLineBtnGhost
+                            key={index}
+                            size={size}
+                            rotation={rotation}
+                            style={{
+                                left: `${x}%`,
+                                top: `${y}%`,
+                            }}
+                            onClick={() => handleClick(index)}
+                        >
+                            <TimeLineBtn>
+                                <TimelineBtnCircle
+                                    size={size}
+                                    active={index === activeTimeline}
                                 >
-                                    Наука
-                                </TimeLineBtnLabel>
-                            </TimeLineBtnGhost>
-
-                        </div>
-
+                                    {index + 1}
+                                </TimelineBtnCircle>
+                            </TimeLineBtn>
+                            <TimeLineBtnLabel active={index === activeTimeline}>
+                                {node.title}
+                            </TimeLineBtnLabel>
+                        </TimeLineBtnGhost>
                     );
                 })}
             </TimeLineBtnContainer>
-
         </Circle>
     )
 }
@@ -84,7 +91,7 @@ export default function TimelineCircle({
 
 const Circle = styled.div`
     border-radius: 100%;
-    border: 1px solid rgba(66, 86, 122, 0.2);
+    border: 1px solid ${colors.border};
     width: 40%;
     height: 40%;
     aspect-ratio: 1 / 1;
@@ -110,7 +117,6 @@ const AxisY = styled.div`
     opacity: 0.2;
     transform: translate(-50%, -50%);
 `;
-
 const Year = styled.div<{side: string}>`
     position: absolute;
     top: 50%;
@@ -130,27 +136,29 @@ const Year = styled.div<{side: string}>`
       `
 }`
 
-const TimelineBtnCircle = styled.div<{size: number}>`
+const TimelineBtnCircle = styled.div<{size: number, active: boolean}>`
     width: ${({size}) => size}px;
     height: ${({size}) => size}px;
-    border: 1px solid rgba(66, 86, 122, 0.5);
-    border-radius: 100%;
+    border: 1px solid ${colors.borderBtn};
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(0);
+    transform: translate(-50%, -50%) 
+    scale(${({active}) => active ? 1 : 0});
     background: white;
     transition: 0.5s ease; /* плавная анимация */
     pointer-events: none;
+    
 `;
 
-const TimeLineBtnGhost = styled.div<{size: number}>`
+const TimeLineBtnGhost = styled.div<{size: number, rotation: number}>`
     position: absolute;
     z-index: 1;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) rotate(${({rotation}) => -rotation}deg);
     background: transparent;
     width: ${({size}) => size}px;
     height: ${({size}) => size}px;
@@ -162,13 +170,15 @@ const TimeLineBtnGhost = styled.div<{size: number}>`
     }
 `
 
-const TimeLineBtnLabel = styled.div`
+const TimeLineBtnLabel = styled.div<{active: boolean}>`
     position: absolute;
     top: 50%;
     left: 100%;
     user-select: none;
     transform: translate(50%, -50%);
     transition: 0.5s ease;
+    scale: ${({active}) => active ? 1 : 0};
+    opacity: ${({active}) => active ? 1 : 0};
 `
 
 const TimeLineBtn = styled.button`
@@ -182,7 +192,7 @@ const TimeLineBtn = styled.button`
     top: 50%;
     transform: translate(-50%, -50%);
     padding: 0;
-    background: #42567A;
+    background: ${colors.colorBtn};
     border: none;
     user-select: none;
 
@@ -192,6 +202,6 @@ const TimeLineBtnContainer = styled.div<{ rotation: number}>`
     position: absolute;
     inset: 0;
     transition: transform 0.5s ease;
-    transform: ${({ rotation }) => `rotate(${rotation}rad)`};
+    transform: ${({ rotation }) => `rotate(${rotation}deg)`};
 
 `;

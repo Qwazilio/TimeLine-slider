@@ -1,7 +1,8 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import {colors} from "@/theme/colors";
 
-interface CircleArrowProps {
+interface CircleArrowProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     direction?: "left" | "right";
     size?: number;       // диаметр круга
     lineLength?: number; // длина линии стрелки
@@ -15,9 +16,10 @@ export default function CircleArrow({
         lineLength = 10,
         lineWidth = 3,
         offset = 1,
+        ...rest
     }: CircleArrowProps) {
     return (
-        <Circle size={size}>
+        <Circle size={size} {...rest}>
             <Arrow mirror={direction === "left"} lineLength={lineLength} lineWidth={lineWidth}>
                 <ArrowLineTop lineLength={lineLength} lineWidth={lineWidth} offset={offset} />
                 <ArrowLineBottom lineLength={lineLength} lineWidth={lineWidth} offset={offset} />
@@ -26,18 +28,17 @@ export default function CircleArrow({
     );
 }
 
-// Стили
-
 const Circle = styled.button<{ size: number }>`
     width: ${({size}) => size}px;
     height: ${({size}) => size}px;
-    border: 1px solid rgba(66, 86, 122, 0.5);
+    border: 1px solid ${colors.borderBtn};
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 10px;
     cursor: pointer;
+    background: white;
 `;
 
 interface ArrowProps {
@@ -48,6 +49,7 @@ interface ArrowProps {
 
 const Arrow = styled.div<ArrowProps>`
     position: relative;
+    user-select: none;
     width: ${({ lineLength }) => lineLength}px;
     height: ${({ lineLength }) => lineLength}px;
     ${({ mirror }) =>
@@ -67,7 +69,7 @@ const ArrowLineBase = css<ArrowLineProps>`
     position: absolute;
     width: ${({ lineLength }) => lineLength}px;
     height: ${({ lineWidth }) => lineWidth}px;
-    background: #42567A;
+    background: ${colors.colorBtn};
     right: 0;
     top: 50%;
     transform: translateY(-50%);

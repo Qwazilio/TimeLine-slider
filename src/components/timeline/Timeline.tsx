@@ -1,9 +1,59 @@
 import styled from "styled-components";
 import TimelineSlider from "@/components/timeline/TimelineSlider";
 import CircleArrow from "@/components/UI/CircleArrow";
-import TimelineCircle from "@/components/timeline/TimelineCircle";
+import TimelineCircle, {TimelineCircleNode} from "@/components/timeline/TimelineCircle";
+import {useState} from "react";
 
+const timelineCircleNodes: TimelineCircleNode[] = [
+    {
+        title: "Кино: переход к звуковому кино",
+        yearStart: 1927,
+        yearEnd: 1932,
+    },
+    {
+        title: "Наука: развитие квантовой механики",
+        yearStart: 1925,
+        yearEnd: 1930,
+    },
+    {
+        title: "Война: Вторая мировая война",
+        yearStart: 1939,
+        yearEnd: 1945,
+    },
+    {
+        title: "Космос: начало космической эры",
+        yearStart: 1957,
+        yearEnd: 1961,
+    },
+    {
+        title: "Технологии: становление интернета",
+        yearStart: 1991,
+        yearEnd: 1996,
+    },
+    {
+        title: "Медицина: расшифровка генома человека",
+        yearStart: 1990,
+        yearEnd: 2003,
+    },
+]
+
+interface TimelineProps {
+    nodes: TimelineCircleNode[];
+}
 export default function Timeline() {
+    const [activeTimeline, setActiveTimeline] = useState(0);
+
+    const nextActiveTimeline = () => {
+        if (activeTimeline >= 5) {
+            setActiveTimeline(0);
+        } else setActiveTimeline(activeTimeline + 1);
+    }
+
+    const prevActiveTimeline = () => {
+        if (activeTimeline <= 0) {
+            setActiveTimeline(5);
+        } else setActiveTimeline(activeTimeline - 1);
+    }
 
     return (
         <div style={{
@@ -35,12 +85,16 @@ export default function Timeline() {
                         </div>
                         <h1 style={{fontSize: 56, fontWeight: "bold"}}>Исторические <br/>даты</h1>
                     </div>
-                    <TimelineCircle />
-                    <div style={{position: 'absolute', left: 0, bottom: 0}}>
-                        <div style={{marginLeft: "1em"}}>01/06</div>
+                    <TimelineCircle
+                        activeTimeline={activeTimeline}
+                        setActiveTimeline={setActiveTimeline}
+                        nodes={timelineCircleNodes}
+                    />
+                    <div style={{position: 'absolute', left: 0, bottom: 0, paddingLeft: "5%"}}>
+                        <div style={{margin: "10px"}}>0{activeTimeline + 1}/06</div>
                         <div style={{display: "flex"}}>
-                            <CircleArrow direction={"left"}/>
-                            <CircleArrow direction={"right"}/>
+                            <CircleArrow onClick={prevActiveTimeline} direction={"left"}/>
+                            <CircleArrow onClick={nextActiveTimeline} direction={"right"}/>
                         </div>
 
                     </div>

@@ -1,24 +1,25 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
-import {FreeMode, Navigation, Pagination} from 'swiper/modules';
-
-
-// Import Swiper styles
+import {FreeMode} from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/pagination';
 import styled from "styled-components";
 
-export default function TimelineSlider(){
+export interface TimelineSliderNode{
+    title: string;
+    description: string;
+}
+interface TimelineSliderProps{
+    nodes?: TimelineSliderNode[];
+}
+export default function TimelineSlider({nodes}: TimelineSliderProps){
     return (
         <div>
             <Swiper
                 slidesPerView={4}
                 spaceBetween={30}
                 freeMode={true}
-                pagination={{
-                    clickable: true,
-                }}
-                modules={[FreeMode, Pagination]}
+                modules={[FreeMode]}
                 className="mySwiper"
             >
                 <SwiperSlide>Slide 1</SwiperSlide>
