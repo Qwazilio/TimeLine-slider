@@ -7,7 +7,8 @@ interface CircleArrowProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
     size?: number;       // диаметр круга
     lineLength?: number; // длина линии стрелки
     lineWidth?: number;  // толщина линии
-    offset?: number;     // костыль на вертикальное смещение
+    offset?: number;     // вертикальное смещение
+    arrowColor?: string;
 }
 
 export default function CircleArrow({
@@ -16,13 +17,14 @@ export default function CircleArrow({
         lineLength = 10,
         lineWidth = 3,
         offset = 1,
+        arrowColor = colors.textPrimary,
         ...rest
     }: CircleArrowProps) {
     return (
         <Circle size={size} {...rest}>
             <Arrow mirror={direction === "left"} lineLength={lineLength} lineWidth={lineWidth}>
-                <ArrowLineTop lineLength={lineLength} lineWidth={lineWidth} offset={offset} />
-                <ArrowLineBottom lineLength={lineLength} lineWidth={lineWidth} offset={offset} />
+                <ArrowLineTop lineLength={lineLength} lineWidth={lineWidth} offset={offset} color={arrowColor}/>
+                <ArrowLineBottom lineLength={lineLength} lineWidth={lineWidth} offset={offset} color={arrowColor} />
             </Arrow>
         </Circle>
     );
@@ -31,14 +33,19 @@ export default function CircleArrow({
 const Circle = styled.button<{ size: number }>`
     width: ${({size}) => size}px;
     height: ${({size}) => size}px;
-    border: 1px solid ${colors.borderBtn};
+    border: 1px solid ${colors.borderButton};
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 10px;
     cursor: pointer;
-    background: white;
+    background: transparent;
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
 `;
 
 interface ArrowProps {
@@ -63,13 +70,14 @@ interface ArrowLineProps {
     lineLength: number;
     lineWidth: number;
     offset: number;
+    color: string;
 }
 
 const ArrowLineBase = css<ArrowLineProps>`
     position: absolute;
     width: ${({ lineLength }) => lineLength}px;
     height: ${({ lineWidth }) => lineWidth}px;
-    background: ${colors.colorBtn};
+    background: ${({ color }) => color};
     right: 0;
     top: 50%;
     transform: translateY(-50%);

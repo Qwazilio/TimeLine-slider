@@ -1,106 +1,140 @@
 import styled from "styled-components";
-import TimelineSlider from "@/components/timeline/TimelineSlider";
+import TimelineSlider, {TimelineSliderNode} from "@/components/timeline/TimelineSlider";
 import CircleArrow from "@/components/UI/CircleArrow";
 import TimelineCircle, {TimelineCircleNode} from "@/components/timeline/TimelineCircle";
 import {useState} from "react";
+import {colors} from "@/theme/colors";
 
-const timelineCircleNodes: TimelineCircleNode[] = [
-    {
-        title: "Кино: переход к звуковому кино",
-        yearStart: 1927,
-        yearEnd: 1932,
-    },
-    {
-        title: "Наука: развитие квантовой механики",
-        yearStart: 1925,
-        yearEnd: 1930,
-    },
-    {
-        title: "Война: Вторая мировая война",
-        yearStart: 1939,
-        yearEnd: 1945,
-    },
-    {
-        title: "Космос: начало космической эры",
-        yearStart: 1957,
-        yearEnd: 1961,
-    },
-    {
-        title: "Технологии: становление интернета",
-        yearStart: 1991,
-        yearEnd: 1996,
-    },
-    {
-        title: "Медицина: расшифровка генома человека",
-        yearStart: 1990,
-        yearEnd: 2003,
-    },
-]
+export interface TimelineNode {
+    circleNode: TimelineCircleNode;
+    slides: TimelineSliderNode[];
+}
 
 interface TimelineProps {
-    nodes: TimelineCircleNode[];
+    nodes: TimelineNode[];
 }
-export default function Timeline() {
+export default function Timeline({nodes}: TimelineProps) {
     const [activeTimeline, setActiveTimeline] = useState(0);
 
     const nextActiveTimeline = () => {
-        if (activeTimeline >= 5) {
+        if (activeTimeline >= nodes.length - 1) {
             setActiveTimeline(0);
         } else setActiveTimeline(activeTimeline + 1);
     }
 
     const prevActiveTimeline = () => {
         if (activeTimeline <= 0) {
-            setActiveTimeline(5);
+            setActiveTimeline(nodes.length - 1);
         } else setActiveTimeline(activeTimeline - 1);
     }
 
     return (
-        <div style={{
-            paddingLeft: "5em 0em",
-            position: "relative",
-            padding: "0% 10%",
-            fontFamily: 'PT Sans',
-            overflow: "hidden",
-            marginTop: "1em",
-            marginBottom: "1em",
-        }}>
-            <div style={{
-                position: "relative",
-                border: "1px solid rgba(66, 86, 122, 0.2)",
-                padding: "5% 0%",
-                overflow: "hidden"
-            }}>
-
-                <div style={{position: 'relative', display: "flex", justifyContent: "center"}}>
-                    <div style={{position: 'absolute', left: 0, paddingLeft: "5%"}}>
-                        <div style={{
-                            position: 'absolute',
-                            left: 0,
-                            top: 0,
-                            width: '5px',           // толщина линии
-                            height: '100%',         // высота линии
-                            background: 'linear-gradient(#3877EE, #EF5DA8)'
-                        }}>
-                        </div>
-                        <h1 style={{fontSize: 56, fontWeight: "bold"}}>Исторические <br/>даты</h1>
-                    </div>
+        <Wrapper>
+            <Container>
+                <TimelineHeader>
+                    <GradientLine />
+                    <div>Исторические <br/>даты</div>
+                </TimelineHeader>
+                <TopSection>
                     <TimelineCircle
                         activeTimeline={activeTimeline}
                         setActiveTimeline={setActiveTimeline}
-                        nodes={timelineCircleNodes}
+                        nodes={nodes.map(item => item.circleNode)}
                     />
-                    <div style={{position: 'absolute', left: 0, bottom: 0, paddingLeft: "5%"}}>
-                        <div style={{margin: "10px"}}>0{activeTimeline + 1}/06</div>
-                        <div style={{display: "flex"}}>
-                            <CircleArrow onClick={prevActiveTimeline} direction={"left"}/>
-                            <CircleArrow onClick={nextActiveTimeline} direction={"right"}/>
-                        </div>
-
-                    </div>
-                </div>
-                <TimelineSlider/>
-            </div>
-        </div>
+                    <BottomLeftControls>
+                        <Counter>0{activeTimeline + 1}/0{nodes.length}</Counter>
+                        <Arrows>
+                            <CircleArrow
+                                onClick={prevActiveTimeline}
+                                disabled={activeTimeline === 0}
+                                direction={"left"}
+                            />
+                            <CircleArrow
+                                onClick={nextActiveTimeline}
+                                disabled={activeTimeline === nodes.length - 1}
+                            />
+                        </Arrows>
+                    </BottomLeftControls>
+                </TopSection>
+                <TimelineSlider
+                    activeTimeline={activeTimeline}
+                    slides={nodes.map(item => item.slides)}
+                />
+            </Container>
+        </Wrapper>
     )
 }
+
+const Wrapper = styled.div`
+    padding: 0 10%;
+    position: relative;
+    font-family: 'PT Sans',serif;
+    line-height: 1.2;
+    overflow: hidden;
+    margin: 1em 0;
+    color: ${colors.textPrimary};
+    font-weight: bold;
+    background: transparent;
+`;
+
+const Container = styled.div`
+    position: relative;
+    border: 1px solid rgba(66, 86, 122, 0.2);
+    padding: 5% 0;
+    overflow: hidden;
+`;
+
+const TopSection = styled.div`
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5%;
+`;
+
+const TimelineHeader = styled.div`
+    position: absolute;
+    left: 0;
+    padding-left: 5%;
+    font-size: 56px;
+    
+    @media (max-width: 1200px) {
+        position: inherit;
+        font-size: 40px;
+    };
+
+    @media (max-width: 768px) { 
+        font-size: 20px;
+    };
+`;
+
+const GradientLine = styled.div`
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 5px;
+    height: 100%;
+    background: linear-gradient(${colors.accentPrimary}, ${colors.accentSecondary});
+
+    @media (max-width: 768px) {
+        display: none;
+    };
+`;
+
+const BottomLeftControls = styled.div`
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding-left: 5%;
+
+    @media (max-width: 1024px) {
+        display: none;
+    };
+`;
+
+const Counter = styled.div`
+    margin: 10px;
+`;
+
+const Arrows = styled.div`
+    display: flex;
+`;
