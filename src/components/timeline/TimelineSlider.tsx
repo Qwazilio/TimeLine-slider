@@ -117,6 +117,9 @@ const fadeIn = keyframes`
 const SliderWrapper = styled.div`
     position: relative;
     animation: ${fadeIn} 1s ease forwards;
-    padding-left: 5%;
-    padding-right: 5%;
+    padding: 0 5%;
+
+    @media (max-width: 768px) {
+        padding: 0;
+    };
 `;

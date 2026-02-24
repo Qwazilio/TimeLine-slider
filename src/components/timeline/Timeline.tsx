@@ -4,6 +4,8 @@ import CircleArrow from "@/components/UI/CircleArrow";
 import TimelineCircle, {TimelineCircleNode} from "@/components/timeline/TimelineCircle";
 import {useState} from "react";
 import {colors} from "@/theme/colors";
+import TimelineDate from "@/components/timeline/TimelineDate";
+import {useCounterAnimation} from "@/hook/useCounterAnimated";
 
 export interface TimelineNode {
     circleNode: TimelineCircleNode;
@@ -15,6 +17,7 @@ interface TimelineProps {
 }
 export default function Timeline({nodes}: TimelineProps) {
     const [activeTimeline, setActiveTimeline] = useState(0);
+    const isMobile = useIsMobile();
 
     const nextActiveTimeline = () => {
         if (activeTimeline >= nodes.length - 1) {
@@ -28,6 +31,13 @@ export default function Timeline({nodes}: TimelineProps) {
         } else setActiveTimeline(activeTimeline - 1);
     }
 
+    const startYear = useCounterAnimation(
+        nodes[activeTimeline].circleNode.yearStart || 0
+    );
+    const endYear = useCounterAnimation(
+        nodes[activeTimeline].circleNode.yearEnd || 0
+    );
+
     return (
         <Wrapper>
             <Container>
@@ -36,11 +46,14 @@ export default function Timeline({nodes}: TimelineProps) {
                     <div>Исторические <br/>даты</div>
                 </TimelineHeader>
                 <TopSection>
+
                     <TimelineCircle
                         activeTimeline={activeTimeline}
                         setActiveTimeline={setActiveTimeline}
                         nodes={nodes.map(item => item.circleNode)}
-                    />
+                    >
+                        <TimelineDate startYear={startYear} endYear={endYear} />
+                    </TimelineCircle>
                     <BottomLeftControls>
                         <Counter>0{activeTimeline + 1}/0{nodes.length}</Counter>
                         <Arrows>
@@ -65,8 +78,10 @@ export default function Timeline({nodes}: TimelineProps) {
     )
 }
 
+
+
 const Wrapper = styled.div`
-    padding: 0 10%;
+    padding: 0 5%;
     position: relative;
     font-family: 'PT Sans',serif;
     line-height: 1.2;
@@ -75,6 +90,10 @@ const Wrapper = styled.div`
     color: ${colors.textPrimary};
     font-weight: bold;
     background: transparent;
+
+    @media (max-width: 768px) {
+        padding: 0 2.5%;
+    };
 `;
 
 const Container = styled.div`
@@ -82,6 +101,11 @@ const Container = styled.div`
     border: 1px solid rgba(66, 86, 122, 0.2);
     padding: 5% 0;
     overflow: hidden;
+        
+    @media (max-width: 768px) {
+        border: none;
+        padding: 0;
+    };
 `;
 
 const TopSection = styled.div`
@@ -104,6 +128,7 @@ const TimelineHeader = styled.div`
 
     @media (max-width: 768px) { 
         font-size: 20px;
+        padding: 0;
     };
 `;
 
@@ -126,7 +151,7 @@ const BottomLeftControls = styled.div`
     bottom: 0;
     padding-left: 5%;
 
-    @media (max-width: 1024px) {
+    @media (max-width: 768px) {
         display: none;
     };
 `;

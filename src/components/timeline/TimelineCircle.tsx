@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, {useEffect, useState} from "react";
+import React, {JSX, useEffect, useState} from "react";
 import {colors} from "@/theme/colors";
 import {useCounterAnimation} from "@/hook/useCounterAnimated";
 
@@ -13,20 +13,16 @@ interface TimelineCircleProps {
     nodes: TimelineCircleNode[];
     activeTimeline: number;
     setActiveTimeline: React.Dispatch<React.SetStateAction<number>>;
+    children: JSX.Element;
 }
 export default function TimelineCircle({
         activeTimeline,
         setActiveTimeline,
         size = 40,
         nodes,
+        children,
     } : TimelineCircleProps) {
     const [rotation, setRotation] = useState(0);
-    const startYear = useCounterAnimation(
-        nodes[activeTimeline].yearStart || 0
-    );
-    const endYear = useCounterAnimation(
-        nodes[activeTimeline].yearEnd || 0
-    );
 
     const changeRotation = (index: number) => {
         const step = 360 / nodes.length;
@@ -43,17 +39,9 @@ export default function TimelineCircle({
 
     return (
         <Circle>
-            {/* Левая дата */}
-            <Year style={{color: colors.accentPrimary}} side={"left"}>
-                {nodes[activeTimeline].yearStart ? startYear : "XXXX"}
-            </Year>
-            {/* Правая дата */}
-            <Year style={{color: colors.accentSecondary}} side={"right"}>
-                {nodes[activeTimeline].yearEnd ? endYear : "XXXX"}
-            </Year>
             <AxisX/>
             <AxisY/>
-
+            {children}
             <TimeLineBtnContainer rotation={rotation}>
                 {nodes.map((node: TimelineCircleNode, index: number) => {
                     const radius = 50; // на границу круга
@@ -122,30 +110,7 @@ const AxisY = styled.div`
     opacity: 0.2;
     transform: translate(-50%, -50%);
 `;
-const Year = styled.div<{side: string}>`
-    position: absolute;
-    top: 50%;
-    font-size: 150px;
-    cursor: default;
-    user-select: none;
-    ${({ side }) =>
-    side === "left"
-        ? `
-        left: 0;
-        transform: translate(-50%, -50%);
-      `
-        : `
-        right: 0;
-        transform: translate(50%, -50%);
-      `};    
-    
-    @media (max-width: 1200px) {
-        font-size: 90px;
-    };    
-    @media (max-width: 768px) {
-        font-size: 56px;
-    };
-}`
+
 
 const TimelineBtnCircle = styled.div<{size: number, active: boolean}>`
     width: ${({size}) => size}px;
@@ -212,8 +177,4 @@ const TimeLineBtnContainer = styled.div<{ rotation: number}>`
     inset: 0;
     transition: transform 0.5s ease;
     transform: ${({ rotation }) => `rotate(${rotation}deg)`};
-
-    @media (max-width: 1024px) {
-        display: none;
-    };
 `;
