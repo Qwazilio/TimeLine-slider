@@ -1,5 +1,5 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
-import {FreeMode} from 'swiper/modules';
+import {FreeMode, Navigation, Pagination} from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/pagination';
@@ -15,10 +15,12 @@ export interface TimelineSliderNode{
 interface TimelineSliderProps{
     slides: TimelineSliderNode[][];
     activeTimeline: number;
+    isMobile?: boolean;
 }
 export default function TimelineSlider({
    slides = [],
-   activeTimeline
+   activeTimeline,
+    isMobile,
 }: TimelineSliderProps){
     const swiperRef = useRef<any>(null);
     const [isBeginning, setIsBeginning] = useState(true);
@@ -32,7 +34,7 @@ export default function TimelineSlider({
 
     return (
         <SliderWrapper key={activeTimeline}>
-            {!isBeginning && (
+            {(!isBeginning && !isMobile) && (
                 <CircleArrow
                     onClick={() => swiperRef.current?.slidePrev()}
                     direction="left"
@@ -47,7 +49,7 @@ export default function TimelineSlider({
                     }}
                 />
             )}
-            {!isEnd && (
+            {(!isEnd && !isMobile) && (
                 <CircleArrow
                     onClick={() => swiperRef.current?.slideNext()}
                     style={{
@@ -77,11 +79,15 @@ export default function TimelineSlider({
                 style={{cursor: "pointer"}}
                 spaceBetween={50}
                 freeMode={true}
-                modules={[FreeMode]}
+                modules={[FreeMode, Pagination]}
                 onSwiper={(swiper) => (swiperRef.current = swiper)}
                 onSlideChange={updateNavState}
                 onReachBeginning={updateNavState}
                 onReachEnd={updateNavState}
+                pagination={{
+                    clickable: true,
+                    el: ".swiper-pagination-custom"
+                }}
             >
                 {currentSlides.map((slide, index) => (
                     <SwiperSlide key={index}>
@@ -93,6 +99,8 @@ export default function TimelineSlider({
         </SliderWrapper>
     )
 }
+
+
 
 const SlideTitle = styled.div`
     color: #5D5FEF;
