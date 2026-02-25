@@ -1,11 +1,13 @@
 # TimeLine Slider
-
 Custom timeline slider component built with React and TypeScript.
 
 ## Description
-
 TimeLine Slider is a reusable React component that displays timeline-based slides with navigation controls.  
 It can be used for historical timelines, project stages, roadmaps, or any time-based content.
+
+## Requirements
+- Node.js 20+
+- npm 9+
 
 ## Tech Stack
 -  React 19
