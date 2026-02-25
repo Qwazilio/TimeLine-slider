@@ -5,21 +5,15 @@ import {TimelineCircleNode} from "@/components/timeline/TimelineCircle";
 import {useCounterAnimation} from "@/hook/useCounterAnimated";
 
 interface TimeLineCircleMobileProps {
-    nodes: TimelineCircleNode[];
-    activeTimeline: number;
+    startYear: number;
+    endYear: number;
+    title?: string;
 }
 export default function TimeLineCircleMobile({
-         activeTimeline,
-         nodes,
+        startYear,
+        endYear,
+        title,
     }: TimeLineCircleMobileProps) {
-
-    const startYear = useCounterAnimation(
-        nodes[activeTimeline].yearStart || 0
-    );
-    const endYear = useCounterAnimation(
-        nodes[activeTimeline].yearEnd || 0
-    );
-
 
     return (
         <Wrapper>
@@ -27,9 +21,7 @@ export default function TimeLineCircleMobile({
                 <div style={{color: colors.accentPrimary}}>{startYear || "XXXX"}</div>
                 <div style={{color: colors.accentSecondary}}>{endYear || "XXXX"}</div>
             </MobileYearRow>
-            <ActiveNodeTitle>
-                {nodes[activeTimeline].title || ""}
-            </ActiveNodeTitle>
+            {title && (<ActiveNodeTitle>{title}</ActiveNodeTitle>)}
             <Divider />
         </Wrapper>
     )

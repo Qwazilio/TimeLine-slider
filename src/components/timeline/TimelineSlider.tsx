@@ -5,7 +5,7 @@ import 'swiper/css/free-mode';
 import 'swiper/css/pagination';
 import styled, {keyframes} from "styled-components";
 import {colors} from "@/theme/colors";
-import {useRef, useState} from "react";
+import {RefObject, useRef, useState} from "react";
 import CircleArrow from "@/components/UI/CircleArrow";
 
 export interface TimelineSliderNode{
@@ -16,11 +16,13 @@ interface TimelineSliderProps{
     slides: TimelineSliderNode[][];
     activeTimeline: number;
     isMobile?: boolean;
+    paginationEl?: RefObject<HTMLDivElement | null>;
 }
 export default function TimelineSlider({
-   slides = [],
-   activeTimeline,
+    slides = [],
+    activeTimeline,
     isMobile,
+    paginationEl,
 }: TimelineSliderProps){
     const swiperRef = useRef<any>(null);
     const [isBeginning, setIsBeginning] = useState(true);
@@ -80,14 +82,17 @@ export default function TimelineSlider({
                 spaceBetween={50}
                 freeMode={true}
                 modules={[FreeMode, Pagination]}
-                onSwiper={(swiper) => (swiperRef.current = swiper)}
                 onSlideChange={updateNavState}
                 onReachBeginning={updateNavState}
                 onReachEnd={updateNavState}
-                pagination={{
-                    clickable: true,
-                    el: ".swiper-pagination-custom"
-                }}
+                pagination={
+                    paginationEl?.current
+                        ? {
+                            clickable: true,
+                            el: paginationEl.current
+                        }
+                        : undefined
+                }
             >
                 {currentSlides.map((slide, index) => (
                     <SwiperSlide key={index}>
@@ -100,10 +105,8 @@ export default function TimelineSlider({
     )
 }
 
-
-
 const SlideTitle = styled.div`
-    color: #5D5FEF;
+    color: ${colors.accentPrimary};
     font-size: 20px;
 `;
 const SlideDesc = styled.div`

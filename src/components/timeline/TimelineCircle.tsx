@@ -1,7 +1,13 @@
-import styled from "styled-components";
 import React, {JSX, useEffect, useState} from "react";
 import {colors} from "@/theme/colors";
-import {useCounterAnimation} from "@/hook/useCounterAnimated";
+import {
+    AxisX,
+    AxisY,
+    Circle, TimeLineBtn, TimelineBtnCircle,
+    TimeLineBtnContainer,
+    TimeLineBtnGhost, TimeLineBtnLabel,
+    Year
+} from "@/components/timeline/TimelineCircle.styled";
 
 export interface TimelineCircleNode{
     title?: string;
@@ -13,20 +19,18 @@ interface TimelineCircleProps {
     nodes: TimelineCircleNode[];
     activeTimeline: number;
     setActiveTimeline: React.Dispatch<React.SetStateAction<number>>;
+    startYear: number;
+    endYear: number;
 }
 export default function TimelineCircle({
         activeTimeline,
         setActiveTimeline,
         size = 40,
         nodes,
+        startYear,
+        endYear,
     } : TimelineCircleProps) {
     const [rotation, setRotation] = useState(0);
-    const startYear = useCounterAnimation(
-        nodes[activeTimeline].yearStart || 0
-    );
-    const endYear = useCounterAnimation(
-        nodes[activeTimeline].yearEnd || 0
-    );
 
     const changeRotation = (index: number) => {
         const step = 360 / nodes.length;
@@ -40,7 +44,6 @@ export default function TimelineCircle({
     useEffect(() => {
         changeRotation(activeTimeline)
     }, [activeTimeline]);
-
 
     return (
         <Circle>
@@ -93,127 +96,3 @@ export default function TimelineCircle({
 }
 
 
-const Circle = styled.div`
-    border-radius: 100%;
-    border: 1px solid ${colors.borderPrimary};
-    width: 40%;
-    height: 40%;
-    aspect-ratio: 1 / 1;
-    position: relative;
-`;
-const AxisX = styled.div`
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100vw;
-    height: 1px;
-    background: ${colors.textPrimary};
-    opacity: 0.2;
-    transform: translate(-50%, -50%);
-`;
-const AxisY = styled.div`
-    position: absolute;
-    left: 50%;
-    top: 0;
-    height: 200vh;
-    width: 1px;
-    background: ${colors.textPrimary};
-    opacity: 0.2;
-    transform: translate(-50%, -50%);
-`;
-const Year = styled.div<{side: string}>`
-    position: absolute;
-    top: 50%;
-    font-size: 150px;
-    cursor: default;
-    user-select: none;
-    ${({ side }) =>
-    side === "left"
-        ? `
-        left: 0;
-        transform: translate(-50%, -50%);
-      `
-        : `
-        right: 0;
-        transform: translate(50%, -50%);
-      `};    
-    
-    @media (max-width: 1200px) {
-        font-size: 90px;
-    };
-}`
-
-const TimelineBtnCircle = styled.button<{
-    size: number;
-    active: boolean;
-}>`
-    width: ${({ size }) => size}px;
-    height: ${({ size }) => size}px;
-
-    border: 1px solid ${colors.borderButton};
-    border-radius: 50%;
-
-    display: grid;
-    place-items: center;
-
-    position: absolute;
-    inset: 50% auto auto 50%;
-
-    transform: translate(-50%, -50%)
-    scale(${({ active }) => (active ? 1 : 0)});
-
-    background: ${colors.bgNodeCircle};
-
-    transition: transform 0.45s cubic-bezier(.4,0,.2,1);
-    pointer-events: none;
-`;
-
-const TimeLineBtnGhost = styled.div<{size: number, rotation: number}>`
-    position: absolute;
-    z-index: 1;
-    transform: translate(-50%, -50%) rotate(${({rotation}) => -rotation}deg);
-    background: transparent;
-    width: ${({size}) => size}px;
-    height: ${({size}) => size}px;
-    aspect-ratio: 1/1;
-    cursor: pointer;
-    transition: 0.5s ease; /* плавная анимация */
-    &:hover ${TimelineBtnCircle} {
-        transform: translate(-50%, -50%) scale(1);
-    }
-`
-
-const TimeLineBtnLabel = styled.div<{active: boolean}>`
-    position: absolute;
-    top: 50%;
-    left: 100%;
-    user-select: none;
-    transform: translate(50%, -50%);
-    transition: 0.5s ease;
-    scale: ${({active}) => active ? 1 : 0};
-    opacity: ${({active}) => active ? 1 : 0};
-`;
-
-const TimeLineBtn = styled.button`
-    position: absolute;
-    cursor: pointer;
-    width: 10px;
-    height: 10px;
-    aspect-ratio: 1/1;
-    border-radius: 100%;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    padding: 0;
-    background: ${colors.textPrimary};
-    border: none;
-    user-select: none;
-`;
-
-
-const TimeLineBtnContainer = styled.div<{ rotation: number}>`
-    position: absolute;
-    inset: 0;
-    transition: transform 0.5s ease;
-    transform: ${({ rotation }) => `rotate(${rotation}deg)`};
-`;

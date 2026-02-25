@@ -2,7 +2,8 @@ import Timeline, {TimelineNode} from "@/components/timeline/Timeline";
 import SomeModule from "@/components/SomeModule";
 import {TimelineCircleNode} from "@/components/timeline/TimelineCircle";
 
-export const timelineData: TimelineNode[] = [
+//Данные
+const timelineData: TimelineNode[] = [
 
     {
         circleNode: {
