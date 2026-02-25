@@ -1,12 +1,13 @@
 {
-  "name": "date-slider",
+  "name": "timeline-slider",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack serve --mode development",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "serve": "serve dist"
   },
   "repository": {
     "type": "git",
@@ -30,11 +31,8 @@
     "@types/react-dom": "^19.2.3",
     "@types/styled-components": "^5.1.36",
     "css-loader": "^7.1.4",
-    "gsap": "^3.14.2",
     "html-webpack-plugin": "^5.6.6",
     "mini-css-extract-plugin": "^2.10.0",
-    "sass": "^1.97.3",
-    "sass-loader": "^16.0.7",
     "style-loader": "^4.0.0",
     "swiper": "^12.1.2",
     "ts-loader": "^9.5.4",

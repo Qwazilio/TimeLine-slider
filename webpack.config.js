@@ -1,5 +1,6 @@
- const path = require('path');
+const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = (env, argv) => {
     const isDev = argv.mode === 'development';
@@ -9,8 +10,11 @@ module.exports = (env, argv) => {
 
         output: {
             path: path.resolve(__dirname, 'dist'),
-            filename: 'bundle.[contenthash].js',
-            publicPath: '/'
+            filename: isDev
+                ? 'bundle.js'
+                : 'bundle.[contenthash].js',
+            publicPath: '/',
+            clean: true
         },
 
         resolve: {
@@ -22,18 +26,18 @@ module.exports = (env, argv) => {
 
         module: {
             rules: [
-                // TSX/TS
                 {
                     test: /\.(ts|tsx)$/,
                     use: 'ts-loader',
                     exclude: /node_modules/,
                 },
 
-                // CSS Modules (SCSS)
                 {
                     test: /\.module\.s[ac]ss$/i,
                     use: [
-                        'style-loader',
+                        isDev
+                            ? 'style-loader'
+                            : MiniCssExtractPlugin.loader,
                         {
                             loader: 'css-loader',
                             options: { modules: true }
@@ -42,20 +46,28 @@ module.exports = (env, argv) => {
                     ],
                 },
 
-                // обычный SCSS
                 {
                     test: /\.s[ac]ss$/i,
                     exclude: /\.module\.s[ac]ss$/i,
-                    use: ['style-loader', 'css-loader', 'sass-loader'],
+                    use: [
+                        isDev
+                            ? 'style-loader'
+                            : MiniCssExtractPlugin.loader,
+                        'css-loader',
+                        'sass-loader'
+                    ],
                 },
 
-                // обычный CSS (для swiper и других библиотек)
                 {
                     test: /\.css$/i,
-                    use: ['style-loader', 'css-loader'],
+                    use: [
+                        isDev
+                            ? 'style-loader'
+                            : MiniCssExtractPlugin.loader,
+                        'css-loader'
+                    ],
                 },
 
-                // изображения/шрифты
                 {
                     test: /\.(png|jpe?g|gif|svg|woff2?|eot|ttf)$/,
                     type: 'asset/resource'
@@ -66,8 +78,13 @@ module.exports = (env, argv) => {
         plugins: [
             new HtmlWebpackPlugin({
                 template: './public/index.html'
+            }),
+
+            !isDev &&
+            new MiniCssExtractPlugin({
+                filename: 'styles.[contenthash].css'
             })
-        ],
+        ].filter(Boolean),
 
         devServer: {
             historyApiFallback: true,
