@@ -40,5 +40,5 @@ npm start
 Build for production:
 ```bash
 npm run build
-npm run serve
+npx serve dist
 ```
