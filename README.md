@@ -1,4 +1,56 @@
 # TimeLine Slider
+
+Пользовательский компонент временной шкалы (таймлайна), созданный с использованием React и TypeScript.
+
+## Описание
+
+**TimeLine Slider** — это переиспользуемый React-компонент для отображения слайдов, привязанных ко времени.
+
+## Требования
+
+* Node.js 20+
+* npm 9+
+
+## Технологический стек
+
+* React 19
+* TypeScript
+* Styled-components
+* Swiper
+* Webpack 5
+
+---
+
+## Установка и запуск
+
+Клонируйте репозиторий:
+
+```bash
+git clone https://github.com/Qwazilio/TimeLine-slider.git
+cd TimeLine-slider
+```
+
+Установите зависимости:
+
+```bash
+npm install
+```
+
+Запустите проект в режиме разработки:
+
+```bash
+npm start
+```
+
+Соберите проект для production:
+
+```bash
+npm run build
+npx serve dist
+```
+
+
+# TimeLine Slider
 Custom timeline slider component built with React and TypeScript.
 
 ## Description
