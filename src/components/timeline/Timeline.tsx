@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import {useEffect, useRef, useState} from "react";
-
 import TimelineSlider, { TimelineSliderNode } from "@/components/timeline/TimelineSlider";
 import TimelineCircle, { TimelineCircleNode } from "@/components/timeline/TimelineCircle";
 import TimeLineCircleMobile from "@/components/timeline/TimeLineCircleMobile";
